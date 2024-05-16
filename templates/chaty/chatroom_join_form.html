@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container my-3">
+    {% if messages %}
+        <div class="alert alert-danger my-3" role="alert">
+            {% for message in messages %}
+                <strong>{{ message.tags }}</strong>
+                <ul><li>{{ message.message }}</li>
+                </ul>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" action="{% url 'chaty:chatroom_join' %}">
+        {% csrf_token %}
+        <input type="hidden" name="text" value="{{ next }}">
+        {% include "form_errors.html" %}
+        <div class="mb-3">
+            <label for="roomname">입장할 roomname</label>
+            <input type="text" class="form-control" name="roomname" id="roomname" value="{{ form.roomname.value|default_if_none:'' }}">
+        </div>
+        <button type="submit" class="btn btn-primary">입장</button>
+    </form>
+    </div>
+{% endblock %}

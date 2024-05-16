@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container my-3">
+    <form method="post" action="{% url 'chaty:chatroom_create' %}">
+        {% csrf_token %}
+        <input type="hidden" name="text" value="{{ next }}">
+        {% include "form_errors.html" %}
+        <div class="mb-3">
+            <label for="roomname">생성할 roomname</label>
+            <input type="text" class="form-control" name="roomname" value="{{ form.roomname.value|default_if_none:'' }}">
+        </div>
+        <button type="submit" class="btn btn-primary">생성</button>
+    </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load chaty_filter %}
+{% block content %}
+    {% if not user.is_authenticated %}
+        <div class="container my-3">
+            <div class="card nt-3">
+                <div class="card-header">로그인을 하라구요~</div>
+                <div class="card-body">
+                    <a class="nav-link" href="{% url 'common:login' %}">로그인</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+    <div class="container my-3">
+        <a href="{% url 'chaty:chatroom_create' %}" class="btn btn-primary">채팅방 만들기</a>
+        <a href="{% url 'chaty:chatroom_join' %}" class="btn btn-primary">채팅방 들어가기</a>
+    </div>
+    <table class="table">
+        <thead>
+            <tr class="text-center table-dark">
+                <th>번호</th>
+                <th>채팅방 이름</th>
+                <th>최근 메시지</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if chatroom_list %}
+            {% for chatroom in chatroom_list %}
+                <tr class="text-center">
+                    <td>
+                        {{ chatroom_list.paginator.count|sub:chatroom_list.start_index|sub:forloop.counter0|add:1 }}
+                    </td>
+                    <td class="text-start">
+                        <a href="{% url 'chaty:chatroom_chat' chatroom.id %}">{{ chatroom.roomname }}</a>
+                    </td>
+                    <td>{{ chatroom.latest_message.message }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+            <td colspan="3">채팅방이 없네요ㅠ</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+    <ul class="pagination justify-content-center">
+    {% if chatroom_list.has_previous %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ chatroom_list.previous_page_number }}" href="javascript:void(0)">이전</a>
+        </li>
+    {% else %}
+        <li class="page-item">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
+    {% endif %}
+    {% for page_number in chatroom_list.paginator.page_range %}
+        {% if page_number >= chatroom_list.number|add:-5 and page_number <= question_list.number|add:5 %}
+        {% if page_number == chatroom_list.number %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" data-page="{{ page_number }}" href="javascript:void(0)"{{ page_number }}></a>
+            </li>
+        {% else %}
+            <li class="page-item" aria-current="page">
+                <a class="page-link" data-page="{{ page_number }}" href="javascript:void(0)"{{ page_number }}></a>
+            </li>
+        {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% if question_list.has_next %}
+        <li class="page-item">
+        <a class="page-link" data-page="{{ question_list.next_page_number }}" href="javascript:void(0)">다음</a>
+        </li>
+    {% else %}
+        <li class="page-item">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+    {% endif %}
+    </ul>
+
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+
+</script>
+{% endblock %}
